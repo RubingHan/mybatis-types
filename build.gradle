@@ -21,6 +21,16 @@ dependencies {
 
 //Include runtime for compilation
 sourceSets.main.compileClasspath += configurations.runtime
+javadoc.classpath += configurations.runtime
+
+buildscript {
+    repositories {
+		mavenCentral()
+    }
+    dependencies {
+        classpath 'org.mybatis:mybatis:3.3.1'
+    }
+}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
