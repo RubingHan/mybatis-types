@@ -1,6 +1,5 @@
+build
 
-#Build
-.nb-gradle
-.nb-gradle-properties
 .gradle
-/build/
+.nb-gradle-properties
+.nb-gradle

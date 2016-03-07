@@ -24,60 +24,49 @@
 package com.github.javaplugs.mybatis;
 
 import java.sql.CallableStatement;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.time.LocalDate;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
 
 /**
- * Map Java 8 Instant &lt;-&gt; java.sql.Timestamp with timezone.
+ * Map Java 8 LocalDate &lt;-&gt; java.sql.Date
  */
-@MappedTypes(OffsetDateTime.class)
-public class OffsetDateTimeHandler extends BaseTypeHandler<OffsetDateTime> {
+@MappedTypes(LocalDate.class)
+public class LocalDateTypeHandler extends BaseTypeHandler<LocalDate> {
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JdbcType jdbcType) throws SQLException {
-        if (parameter == null) {
-            ps.setTimestamp(i, null);
-        } else {
-            ps.setTimestamp(
-                i,
-                Timestamp.from(parameter.toInstant()),
-                GregorianCalendar.from(parameter.toZonedDateTime())
-            );
-        }
+    public void setNonNullParameter(PreparedStatement ps, int i, LocalDate parameter, JdbcType jdbcType) throws SQLException {
+        ps.setDate(i, Date.valueOf(parameter));
     }
 
     @Override
-    public OffsetDateTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Timestamp ts = rs.getTimestamp(columnName, Calendar.getInstance());
-        if (ts != null) {
-            return OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.systemDefault());
+    public LocalDate getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        Date date = rs.getDate(columnName);
+        if (date != null) {
+            return date.toLocalDate();
         }
         return null;
     }
 
     @Override
-    public OffsetDateTime getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Timestamp ts = rs.getTimestamp(columnIndex, Calendar.getInstance());
-        if (ts != null) {
-            return OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.systemDefault());
+    public LocalDate getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        Date date = rs.getDate(columnIndex);
+        if (date != null) {
+            return date.toLocalDate();
         }
         return null;
     }
 
     @Override
-    public OffsetDateTime getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Timestamp ts = cs.getTimestamp(columnIndex, Calendar.getInstance());
-        if (ts != null) {
-            return OffsetDateTime.ofInstant(ts.toInstant(), ZoneId.systemDefault());
+    public LocalDate getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        Date date = cs.getDate(columnIndex);
+        if (date != null) {
+            return date.toLocalDate();
         }
         return null;
     }

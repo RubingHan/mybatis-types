@@ -23,55 +23,62 @@
  */
 package com.github.javaplugs.mybatis;
 
+import java.sql.Array;
 import java.sql.CallableStatement;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedTypes;
 
-/**
- * Map Java 8 LocalDate &lt;-&gt; java.sql.Date
- */
-@MappedTypes(LocalDate.class)
-public class LocalDateHandler extends BaseTypeHandler<LocalDate> {
+public abstract class ArrayTypeHandler<T> extends BaseTypeHandler<T> {
+
+    /**
+     * Should return valid type name for this DB.
+     */
+    protected abstract String getTypeName(PreparedStatement ps);
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, LocalDate parameter, JdbcType jdbcType) throws SQLException {
-        if (parameter == null) {
-            ps.setDate(i, null);
-        } else {
-            ps.setDate(i, Date.valueOf(parameter));
-        }
+    public void setNonNullParameter(PreparedStatement ps, int i, T parameter, JdbcType jdbcType) throws SQLException {
+        Array param = ps.getConnection().createArrayOf(getTypeName(ps), (Object[])parameter);
+        // ps.setObject(i, param, java.sql.Types.ARRAY);
+        ps.setArray(i, param);
     }
 
     @Override
-    public LocalDate getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Date date = rs.getDate(columnName);
-        if (date != null) {
-            return date.toLocalDate();
+    public T getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        Array array = rs.getArray(columnName);
+        if (array == null) {
+            return null;
         }
-        return null;
+        return fromArray(array);
     }
 
     @Override
-    public LocalDate getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Date date = rs.getDate(columnIndex);
-        if (date != null) {
-            return date.toLocalDate();
+    public T getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        Array array = rs.getArray(columnIndex);
+        if (array == null) {
+            return null;
         }
-        return null;
+        return fromArray(array);
     }
 
     @Override
-    public LocalDate getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Date date = cs.getDate(columnIndex);
-        if (date != null) {
-            return date.toLocalDate();
+    public T getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        Array array = cs.getArray(columnIndex);
+        if (array == null) {
+            return null;
         }
-        return null;
+        return fromArray(array);
     }
+
+    @SuppressWarnings("unchecked")
+    private T fromArray(Array source) {
+        try {
+            return (T)source.getArray();
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
+    }
+
 }

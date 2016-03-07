@@ -24,53 +24,49 @@
 package com.github.javaplugs.mybatis;
 
 import java.sql.CallableStatement;
+import java.sql.Time;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Instant;
+import java.time.LocalTime;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
 
 /**
- * Map Java 8 Instant &lt;-&gt; java.sql.Timestamp
+ * Map Java 8 LocalTime &lt;-&gt; java.sql.Time
  */
-@MappedTypes(Instant.class)
-public class InstantHandler extends BaseTypeHandler<Instant> {
+@MappedTypes(LocalTime.class)
+public class LocalTimeTypeHandler extends BaseTypeHandler<LocalTime> {
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, Instant parameter, JdbcType jdbcType) throws SQLException {
-        if (parameter == null) {
-            ps.setTimestamp(i, null);
-        } else {
-            ps.setTimestamp(i, Timestamp.from(parameter));
-        }
+    public void setNonNullParameter(PreparedStatement ps, int i, LocalTime parameter, JdbcType jdbcType) throws SQLException {
+        ps.setTime(i, Time.valueOf(parameter));
     }
 
     @Override
-    public Instant getNullableResult(ResultSet rs, String columnName) throws SQLException {
-        Timestamp ts = rs.getTimestamp(columnName);
-        if (ts != null) {
-            return ts.toInstant();
+    public LocalTime getNullableResult(ResultSet rs, String columnName) throws SQLException {
+        Time time = rs.getTime(columnName);
+        if (time != null) {
+            return time.toLocalTime();
         }
         return null;
     }
 
     @Override
-    public Instant getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
-        Timestamp ts = rs.getTimestamp(columnIndex);
-        if (ts != null) {
-            return ts.toInstant();
+    public LocalTime getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+        Time time = rs.getTime(columnIndex);
+        if (time != null) {
+            return time.toLocalTime();
         }
         return null;
     }
 
     @Override
-    public Instant getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
-        Timestamp ts = cs.getTimestamp(columnIndex);
-        if (ts != null) {
-            return ts.toInstant();
+    public LocalTime getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+        Time time = cs.getTime(columnIndex);
+        if (time != null) {
+            return time.toLocalTime();
         }
         return null;
     }

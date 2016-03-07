@@ -40,18 +40,14 @@ import org.apache.ibatis.type.MappedTypes;
  * Map Java 8 LocalDateTime &lt;-&gt; java.sql.Timestamp
  */
 @MappedTypes(LocalDateTime.class)
-public class LocalDateTimeHandler extends BaseTypeHandler<LocalDateTime> {
+public class LocalDateTimeTypeHandler extends BaseTypeHandler<LocalDateTime> {
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, LocalDateTime parameter, JdbcType jdbcType) throws SQLException {
-        if (parameter == null) {
-            ps.setTimestamp(i, null);
-        } else {
-            ps.setTimestamp(i,
-                Timestamp.valueOf(parameter),
-                GregorianCalendar.from(ZonedDateTime.of(parameter, ZoneId.systemDefault()))
-            );
-        }
+        ps.setTimestamp(i,
+            Timestamp.valueOf(parameter),
+            GregorianCalendar.from(ZonedDateTime.of(parameter, ZoneId.systemDefault()))
+        );
     }
 
     @Override

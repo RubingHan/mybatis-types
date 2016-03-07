@@ -1,6 +1,10 @@
-# Java 8 time (JSR 310) support for Mybatis
+# Additional MyBatis type handlers for Java 8 runtime without extra dependencies
 
-This artefact provides mybatis handlers for core java.time.\* types:
+## Array support
+Experimental feature. Tested only with postgresql.
+
+## Java 8 time (JSR 310) support for Mybatis
+Provides mybatis handlers for core java.time.\* types:
 - java.time.Instant (via java.sql.Timestamp)
 - java.time.LocalDate (via java.sql.Date)
 - java.time.LocalDateTime (via java.sql.Timestamp)
@@ -8,36 +12,20 @@ This artefact provides mybatis handlers for core java.time.\* types:
 - java.time.OffsetDateTime (via java.sql.Timestamp)
 - java.time.ZonedDateTime (via java.sql.Timestamp)
 
-## Adding to your project
+## Java properties like fields support
+Experimental feature (almost working but not fully tested). 
+Allows you to store your string key-value maps into text fields.
 
-For now this package is available only via https://jitpack.io/
 
-### Gradle dependencies
-```
-repositories {
-  maven {
-    url "https://jitpack.io"
-  }
-}
+[![Release](https://jitpack.io/v/javaplugs/mybatis-types.svg)](https://jitpack.io/#javaplugs/mybatis-types)  
+[API javadoc](https://jitpack.io/com/github/javaplugs/minibus/-SNAPSHOT/mybatis-types/)
 
-dependencies {
-  compile 'com.github.javaplugs:mybatis-java-time:0.2'
-}
-```
+## Add to your project
 
-### Maven dependencies
-```
-<repository>
-  <id>jitpack.io</id>
-  <url>https://jitpack.io</url>
-</repository>
+You can add this artifact to your project using [JitPack](https://jitpack.io/#javaplugs/mybatis-types).  
+All versions list, instructions for gradle, maven, ivy etc. can be found by link above.
 
-<dependency>
-  <groupId>com.github.javaplugs</groupId>
-  <artifactId>mybatis-java-time</artifactId>
-  <version>0.2</version>
-</dependency>
-```
+To get latest commit use -SNAPSHOT instead version number.
 
 ## Configure
 
@@ -45,21 +33,22 @@ dependencies {
 ```
 <!-- mybatis-config.xml -->
 <typeHandlers>
-  <typeHandler handler="com.github.javaplugs.mybatis.InstantHandler"/>
-  <typeHandler handler="com.github.javaplugs.mybatis.LocalDateHandler"/>
-  <typeHandler handler="com.github.javaplugs.mybatis.LocalDateTimeHandler"/>
-  <typeHandler handler="com.github.javaplugs.mybatis.LocalTimeHandler"/>
-  <typeHandler handler="com.github.javaplugs.mybatis.OffsetDateTimeHandler"/>
-  <typeHandler handler="com.github.javaplugs.mybatis.ZonedDateTimeHandler"/>
+  <package name="com.github.javaplugs.mybatis"/>
 </typeHandlers>
 ```
 
-Or you can use package search
+Or you can specify each type handler class one by one.
+In a case if you are need particular handlers only.
 
 ```
 <!-- mybatis-config.xml -->
 <typeHandlers>
-  <package name="com.github.javaplugs.mybatis"/>
+  <typeHandler handler="com.github.javaplugs.mybatis.InstantTypeHandler"/>
+  <typeHandler handler="com.github.javaplugs.mybatis.LocalDateTypeHandler"/>
+  <typeHandler handler="com.github.javaplugs.mybatis.LocalDateTimeTypeHandler"/>
+  <typeHandler handler="com.github.javaplugs.mybatis.LocalTimeTypeHandler"/>
+  <typeHandler handler="com.github.javaplugs.mybatis.OffsetDateTimeTypeHandler"/>
+  <typeHandler handler="com.github.javaplugs.mybatis.ZonedDateTimeTypeHandler"/>
 </typeHandlers>
 ```
 
