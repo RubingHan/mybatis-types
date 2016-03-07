@@ -18,7 +18,7 @@ Allows you to store your string key-value maps into text fields.
 
 
 [![Release](https://jitpack.io/v/javaplugs/mybatis-types.svg)](https://jitpack.io/#javaplugs/mybatis-types)  
-[API javadoc](https://jitpack.io/com/github/javaplugs/minibus/-SNAPSHOT/mybatis-types/)
+[API javadoc](https://jitpack.io/com/github/javaplugs/mybatis-types/-SNAPSHOT/javadoc/)
 
 ## Add to your project
 
