@@ -28,27 +28,31 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedTypes;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 
 /**
- * Denormalize your schema, using text fields to store your properties.
- * Note! Will read properties on field load, thus all parsing errors will occur inside mybatis.
- * Plus such properties parsing may have performance impact.
+ * Easy way to denormalize your schema, using text fields to store your properties.
+ * This handler use java Properties to de/serialize you string key-value pairs.
+ * Instead using java.util.Properties you use Map&lt;String, String&gt; implementations.
+ * WARNING. You must use only HashMap or LinkedHashMap, but your field must be defined
+ * as Map&lt;String, String&gt;!
  *
- * If you read properties rarely, than I suggest you to use {@link MapTypeHandler} that
- * parse properties string only on demand.
+ * Note that result map is lazy! It will parse field value only on demand.
+ * Thus some runtime parsing exceptions may occur in your code if db field value can not be read as properties.
  */
-@MappedTypes({Properties.class})
-public class PropertiesTypeHandler extends BaseTypeHandler<Properties> {
+@MappedTypes({Map.class, HashMap.class, LinkedHashMap.class, MapLazyWrapper.class})
+public class MapTypeHandler extends BaseTypeHandler<Map<String, String>> {
 
     @Override
-    public void setNonNullParameter(PreparedStatement ps, int i, Properties parameter, JdbcType jdbcType) throws SQLException {
+    public void setNonNullParameter(PreparedStatement ps, int i, Map<String, String> parameter, JdbcType jdbcType) throws SQLException {
         Properties properties = new Properties();
         properties.putAll(parameter);
         StringWriter sw = new StringWriter();
@@ -61,31 +65,21 @@ public class PropertiesTypeHandler extends BaseTypeHandler<Properties> {
     }
 
     @Override
-    public Properties getNullableResult(ResultSet rs, String columnName) throws SQLException {
+    public Map<String, String> getNullableResult(ResultSet rs, String columnName) throws SQLException {
         String value = rs.getString(columnName);
-        return value == null ? null : toProperties(value);
+        return value == null ? null : new MapLazyWrapper(value);
     }
 
     @Override
-    public Properties getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+    public Map<String, String> getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
         String value = rs.getString(columnIndex);
-        return value == null ? null : toProperties(value);
+        return value == null ? null : new MapLazyWrapper(value);
     }
 
     @Override
-    public Properties getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+    public Map<String, String> getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
         String value = cs.getString(columnIndex);
-        return value == null ? null : toProperties(value);
+        return value == null ? null : new MapLazyWrapper(value);
     }
 
-    private Properties toProperties(String value) {
-        Properties p = new Properties();
-        try {
-            p.load(new StringReader(value));
-        } catch (IOException ex) {
-            throw new RuntimeException("Can not load k->v properties from string.\n"
-                + ex.getMessage(), ex);
-        }
-        return p;
-    }
 }

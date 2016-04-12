@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Vladislav Zablotsky
+ * Copyright (c) 2016 Vladislav Zablotsky
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,18 @@
  */
 package com.github.javaplugs.mybatis;
 
-import java.sql.PreparedStatement;
 import org.apache.ibatis.type.MappedTypes;
 
+import java.sql.Connection;
+
 /**
- * Map PostgreSQL array of integers(int4) to java int[] primitive array.
+ * Map PostgreSQL array of integers(int4) to java Integer[] array.
  */
 @MappedTypes(Integer[].class)
-public class ArrayIntTypeHandler extends ArrayTypeHandler<Integer[]> {
+public class ArrayIntegerTypeHandler extends ArrayTypeHandler<Integer[]> {
 
     @Override
-    protected String getTypeName(PreparedStatement ps) {
+    protected String getDbTypeName(Connection connection) {
         // Now support only PostgreSQL types
         return "int4";
     }

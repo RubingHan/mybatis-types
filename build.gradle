@@ -2,21 +2,36 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group = 'com.github.javaplugs'
-version = '0.3-a1'
+version = '0.3-a2'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    jcenter()
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
     runtime 'org.mybatis:mybatis:3.+'
     
-    //    testCompile 'org.mybatis:mybatis:3.+'
-    //    testCompile 'junit:junit:4.12'
-    //    testCompile 'org.postgresql:postgresql:9.4-1206-jdbc42'
+    testCompile 'org.mybatis:mybatis:3.+'
+    testCompile 'org.testng:testng:6.9.10'
+    testCompile 'org.assertj:assertj-core:3.4.1'
+    testCompile 'org.postgresql:postgresql:9.4.1208.jre7'
+    testCompile 'org.projectlombok:lombok:1.16.8'
+    testCompile 'com.github.javaplugs:javaplugs:0.2'
+}
+
+test {
+    useTestNG()
+    
+    testLogging.showStandardStreams = true
+    // listen to standard out and standard error of the test JVM(s)
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
+    }
 }
 
 //Include runtime for compilation

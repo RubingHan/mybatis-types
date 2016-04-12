@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Vladislav Zablotsky
+ * Copyright (c) 2016 Vladislav Zablotsky
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,7 +23,9 @@
  */
 package com.github.javaplugs.mybatis;
 
-import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.apache.ibatis.type.MappedTypes;
 
 /**
@@ -33,8 +35,21 @@ import org.apache.ibatis.type.MappedTypes;
 public class ArrayStringTypeHandler extends ArrayTypeHandler<String[]> {
 
     @Override
-    protected String getTypeName(PreparedStatement ps) {
-        // Now support only PostgreSQL types
-        return "text";
+    protected String getDbTypeName(Connection connection) throws SQLException {
+        String db = connection.getMetaData().getDatabaseProductName();
+        return getTypeForDb(db);
+    }
+
+    /**
+     * Return array element type for database product name.
+     * Now support only PostgreSQL types.
+     */
+    public static String getTypeForDb(String dbname) {
+        switch (dbname) {
+            case "PostgreSQL":
+                return "text";
+            default:
+                throw new UnsupportedOperationException("Unsupported DB vendor: " + dbname);
+        }
     }
 }

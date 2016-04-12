@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Vladislav Zablotsky
+ * Copyright (c) 2016 Vladislav Zablotsky
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,17 +23,17 @@
  */
 package com.github.javaplugs.mybatis;
 
-import java.sql.PreparedStatement;
+import java.sql.Connection;
 import org.apache.ibatis.type.MappedTypes;
 
 /**
- * Map PostgreSQL array of longs(int8) to java long[] primitive array.
+ * Map PostgreSQL array of longs(int8) to java Long[] array.
  */
 @MappedTypes(Long[].class)
 public class ArrayLongTypeHandler extends ArrayTypeHandler<Long[]> {
 
     @Override
-    protected String getTypeName(PreparedStatement ps) {
+    protected String getDbTypeName(Connection connection) {
         // Now support only PostgreSQL types
         return "bigint";
     }

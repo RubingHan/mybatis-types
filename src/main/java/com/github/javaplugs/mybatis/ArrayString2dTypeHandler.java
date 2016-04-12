@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Vladislav Zablotsky
+ * Copyright (c) 2016 Vladislav Zablotsky
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,18 +23,27 @@
  */
 package com.github.javaplugs.mybatis;
 
-import java.sql.PreparedStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.apache.ibatis.type.MappedTypes;
 
 /**
- * Map PostgreSQL array of bytes to java byte[] primitive array.
+ * Multi dimensional array handler.
+ *
+ * PostgreSQL require that such arrays must be as matrix - all rows must have same amount of elements.
  */
-@MappedTypes(Byte[].class)
-public class ArrayByteTypeHandler extends ArrayTypeHandler<Byte[]> {
+@MappedTypes(String[][].class)
+public class ArrayString2dTypeHandler extends ArrayTypeHandler<String[][]> {
 
     @Override
-    protected String getTypeName(PreparedStatement ps) {
-        // Now support only PostgreSQL types
-        return "byte";
+    protected String getDbTypeName(Connection connection) throws SQLException {
+        String db = connection.getMetaData().getDatabaseProductName();
+        return ArrayStringTypeHandler.getTypeForDb(db);
+    }
+
+    @Override
+    protected String[][] toEmptyValue(Object[] value) {
+        return new String[0][0];
     }
 }
