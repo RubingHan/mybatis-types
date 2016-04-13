@@ -1,9 +1,13 @@
 DROP TABLE IF EXISTS mybatis_time;
 
 CREATE TABLE mybatis_time (
-    id INT8,
-    jsonArray JSON,
-    jsonObject JSON
+    id INT8 UNIQUE,
+    instant TIMESTAMP,
+    localt  TIME,
+    locald DATE,
+    localdt TIMESTAMP,
+    offsetdt TIMESTAMP with time zone,
+    zoneddt TIMESTAMP with time zone
 );
 
 DROP TABLE IF EXISTS mybatis_arrays;

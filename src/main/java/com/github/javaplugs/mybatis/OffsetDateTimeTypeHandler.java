@@ -23,6 +23,10 @@
  */
 package com.github.javaplugs.mybatis;
 
+import org.apache.ibatis.type.BaseTypeHandler;
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedTypes;
+
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,11 +34,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import org.apache.ibatis.type.BaseTypeHandler;
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedTypes;
 
 /**
  * Map Java 8 Instant &lt;-&gt; java.sql.Timestamp with timezone.
@@ -44,6 +47,12 @@ public class OffsetDateTimeTypeHandler extends BaseTypeHandler<OffsetDateTime> {
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, OffsetDateTime parameter, JdbcType jdbcType) throws SQLException {
+        // Postgres do not work with offsets > than 15 hours, maybe other DBs too
+        int offset = parameter.get(ChronoField.OFFSET_SECONDS);
+        if (Math.abs(offset) > 54000) {
+            parameter = parameter.withOffsetSameInstant(ZoneOffset.ofHours(offset > 0 ? 15 : -15));
+        }
+
         ps.setTimestamp(
             i,
             Timestamp.from(parameter.toInstant()),

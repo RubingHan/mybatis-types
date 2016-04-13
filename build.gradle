@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group = 'com.github.javaplugs'
-version = '0.3-a2'
+version = '0.3-beta1'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

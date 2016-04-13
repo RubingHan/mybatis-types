@@ -33,7 +33,7 @@ public class TestSuite {
         // Add Mappers
         configuration.addMapper(TypesMapper.class);
         configuration.addMapper(ArraysMapper.class);
-        configuration.addMapper(MapperTime.class);
+        configuration.addMapper(TimeMapper.class);
 
         ssf = new SqlSessionFactoryBuilder().build(configuration);
     }
