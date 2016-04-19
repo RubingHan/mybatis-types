@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 group = 'com.github.javaplugs'
-version = '0.3-beta1'
+version = '0.3'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -14,9 +14,9 @@ repositories {
 }
 
 dependencies {
-    runtime 'org.mybatis:mybatis:3.+'
+    runtime 'org.mybatis:mybatis:3.3.0'
     
-    testCompile 'org.mybatis:mybatis:3.+'
+    testCompile 'org.mybatis:mybatis:3.3.0'
     testCompile 'org.testng:testng:6.9.10'
     testCompile 'org.assertj:assertj-core:3.4.1'
     testCompile 'org.postgresql:postgresql:9.4.1208.jre7'
@@ -43,7 +43,7 @@ buildscript {
 		mavenCentral()
     }
     dependencies {
-        classpath 'org.mybatis:mybatis:3.3.1'
+        classpath 'org.mybatis:mybatis:3.3.0'
     }
 }
 

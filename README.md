@@ -1,10 +1,10 @@
 # Additional MyBatis type handlers for Java 8 runtime without extra dependencies
 
-## Array support
-Experimental feature. Tested only with postgresql.
+[![Release](https://jitpack.io/v/javaplugs/mybatis-types.svg)](https://jitpack.io/#javaplugs/mybatis-types)  
+[API javadoc](https://jitpack.io/com/github/javaplugs/mybatis-types/-SNAPSHOT/javadoc/)
 
 ## Java 8 time (JSR 310) support for Mybatis
-Provides mybatis handlers for core java.time.\* types:
+This packages provide mybatis type handlers for core java.time.\* types:
 - java.time.Instant (via java.sql.Timestamp)
 - java.time.LocalDate (via java.sql.Date)
 - java.time.LocalDateTime (via java.sql.Timestamp)
@@ -12,13 +12,19 @@ Provides mybatis handlers for core java.time.\* types:
 - java.time.OffsetDateTime (via java.sql.Timestamp)
 - java.time.ZonedDateTime (via java.sql.Timestamp)
 
-## Java properties like fields support
-Experimental feature (almost working but not fully tested). 
-Allows you to store your string key-value maps into text fields.
+## Arrays support
+Generally JDBC driver has built-in support for array types.
+Thus any DB with array support can be supported.
 
+I'm provide support only for PostgreSQL array types.
+Theoretically adding new DB will require only several lines of code, but I do not have time for this. 
+Fell free to contribute if you require new DB support for arrays.
 
-[![Release](https://jitpack.io/v/javaplugs/mybatis-types.svg)](https://jitpack.io/#javaplugs/mybatis-types)  
-[API javadoc](https://jitpack.io/com/github/javaplugs/mybatis-types/-SNAPSHOT/javadoc/)
+## Java properties and key-value map support
+Underlying concept is simple - any text field can have content in format of properties file. 
+
+This package provide a way to read/write properties into text fields.
+In your application you can use ```Map<String,String>``` or ```java.util.Properties``` objects to store/read your fields.
 
 ## Add to your project
 
@@ -49,6 +55,7 @@ In a case if you are need particular handlers only.
   <typeHandler handler="com.github.javaplugs.mybatis.LocalTimeTypeHandler"/>
   <typeHandler handler="com.github.javaplugs.mybatis.OffsetDateTimeTypeHandler"/>
   <typeHandler handler="com.github.javaplugs.mybatis.ZonedDateTimeTypeHandler"/>
+  <!-- and other handlers -->
 </typeHandlers>
 ```
 
